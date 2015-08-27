@@ -66,4 +66,12 @@ public class DataBaseManager {
         db .execSQL("insert into " + TABLE_NAME + " values ( null, '+ nombre +', '+ telefono +' )");
     }
 
+    public void eliminar( String nombre ) {
+        //-> db .delete( TABLE, WHERE, Array ARGUMENTS );
+        //      TABLE: Nombre de la tabla
+        //      WHERE: Nombre del campo a filtrar y ?, que significa donde se van a sustituir los argumentos
+        //      ARGUMENTS:  Los valores que vamos a reemplazar en el filtro WHERE. Debe ser un "Array" de tipo "String"
+        db .delete( TABLE_NAME, CN_NAME + "=?", new String[] { nombre } );
+    }
+
 }
