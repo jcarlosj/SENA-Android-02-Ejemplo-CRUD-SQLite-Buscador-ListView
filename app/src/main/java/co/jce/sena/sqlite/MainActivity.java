@@ -1,6 +1,5 @@
 package co.jce.sena.sqlite;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -8,20 +7,14 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
 
-    //-> ATRIBUTOS
-    private DataBaseHelper helper;
-    private SQLiteDatabase db;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //-> Instanciamos la clase "DataBaseHelper"
-        helper = new DataBaseHelper( this );
-        db = helper .getWritableDatabase();      //: Esta línea permite la creación de la BD. el método ".getWritableDatabase()" es un método de
-                                                                //: la clase "SQLiteOpenHelper" que se encarga de crear la BD si no existe y la establece en modo
-                                                                //: de escritura, si ya existe solo la devuelve.
+        //-> Para poder acceder a la clase que construye la BD, instanciamos.
+        DataBaseManager manager = new DataBaseManager( this );
+        manager .insertar_Android( "Laura Zapata A", "2795411" );
 
     }
 
