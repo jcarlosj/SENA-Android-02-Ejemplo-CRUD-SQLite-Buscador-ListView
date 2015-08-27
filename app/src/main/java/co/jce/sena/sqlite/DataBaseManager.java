@@ -71,7 +71,11 @@ public class DataBaseManager {
         //      TABLE: Nombre de la tabla
         //      WHERE: Nombre del campo a filtrar y ?, que significa donde se van a sustituir los argumentos
         //      ARGUMENTS:  Los valores que vamos a reemplazar en el filtro WHERE. Debe ser un "Array" de tipo "String"
-        db .delete( TABLE_NAME, CN_NAME + "=?", new String[] { nombre } );
+        db .delete(TABLE_NAME, CN_NAME + "=?", new String[]{nombre});
+    }
+
+    public void eliminar_multiple( String nombre1, String nombre2 ) {
+        db .delete( TABLE_NAME, CN_NAME + " IN ( ?, ? )", new String[] { nombre1, nombre2 } );
     }
 
 }
