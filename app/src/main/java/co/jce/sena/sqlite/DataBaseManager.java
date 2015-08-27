@@ -61,4 +61,9 @@ public class DataBaseManager {
 
     }
 
+    //-> Esta forma de insertar datos es la manera tradicional usando directamente una sentencia SQL.
+    public void insertar_Tradicional( String nombre, String telefono ) {
+        db .execSQL("insert into " + TABLE_NAME + " values ( null, '+ nombre +', '+ telefono +' )");
+    }
+
 }

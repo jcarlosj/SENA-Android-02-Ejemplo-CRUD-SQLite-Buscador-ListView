@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
         //-> Para poder acceder a la clase que construye la BD, instanciamos.
         DataBaseManager manager = new DataBaseManager( this );
         manager .insertar_Android( "Laura Zapata A", "2795411" );
+        manager .insertar_Tradicional( "Juliana Muñoz Betancour", "2698541" );
 
     }
 
