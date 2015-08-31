@@ -2,6 +2,7 @@ package co.jce.sena.sqlite;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.net.ContentHandler;
@@ -19,6 +20,9 @@ public class DataBaseManager {
     public static final String CN_NAME = "nombre";     //: Nombre del contácto.
     public static final String CN_PHONE = "telefono";  //: Tel[efono del contácto.
 
+    //
+    private String columnas[];
+
     // Sentencia SQL para la creación de la tabla
     public static final String CREATE_TABLE = "create table " + TABLE_NAME + " ("
             + CN_ID + " integer primary key autoincrement, "
@@ -34,6 +38,9 @@ public class DataBaseManager {
     //-> Constructor
     public DataBaseManager( Context context ) {
 
+        //-> Inicializamos el "Array" columnas.
+        columnas = new String [] { CN_ID, CN_NAME, CN_PHONE };
+
         //-> Instanciamos la clase "DataBaseHelper"
         helper = new DataBaseHelper( context );
         db = helper .getWritableDatabase();     //: Esta línea permite la creación de la BD. el método ".getWritableDatabase()" es un método de
@@ -45,7 +52,7 @@ public class DataBaseManager {
     private ContentValues contenedor_valores( String nombre, String telefono ) {
         valores = new ContentValues();
         valores .put( CN_NAME, nombre );
-        valores .put( CN_PHONE, telefono );
+        valores .put(CN_PHONE, telefono);
 
         return valores;
     }
@@ -63,7 +70,7 @@ public class DataBaseManager {
 
     //-> Esta forma de insertar datos es la manera tradicional usando directamente una sentencia SQL.
     public void insertar_Tradicional( String nombre, String telefono ) {
-        db .execSQL("insert into " + TABLE_NAME + " values ( null, '+ nombre +', '+ telefono +' )");
+        db .execSQL("insert into " + TABLE_NAME + " values ( null, '" + nombre + "', '" + telefono + "' )");
     }
 
     public void eliminar( String nombre ) {
@@ -74,13 +81,18 @@ public class DataBaseManager {
         db .delete(TABLE_NAME, CN_NAME + "=?", new String[]{nombre});
     }
 
-    public void eliminar_multiple( String nombre1, String nombre2 ) {
-        db .delete( TABLE_NAME, CN_NAME + " IN ( ?, ? )", new String[] { nombre1, nombre2 } );
+    public void eliminarMultiple( String nombre1, String nombre2 ) {
+        db .delete(TABLE_NAME, CN_NAME + " IN ( ?, ? )", new String[]{nombre1, nombre2});
     }
 
     public void editarTelefono( String nombre, String nuevoTelefono ) {
-        //-> db .update( TABLE, ContentValues, WHERE,  Array ARGUMENTS );
+        //-> db .update( TABLE, ContentValues, Clausula WHERE,  Array ARGUMENTS Where );
         db .update( TABLE_NAME, contenedor_valores( nombre, nuevoTelefono), CN_NAME + "=?", new String[] { nombre } );
     }
 
+    //-> Cargamos la lista de contactos en un cursor
+    public Cursor listaContactos() {
+        //-> db. query( String table, String [] columns, String selection, String [] selectionArgs, String groupBy, String having, String orderBy );
+        return db .query( TABLE_NAME, columnas, null, null, null, null, null );
+    }
 }
