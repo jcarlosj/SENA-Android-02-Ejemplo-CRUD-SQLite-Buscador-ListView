@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.Toast;
 
 import java.net.ContentHandler;
 
@@ -87,7 +88,7 @@ public class DataBaseManager {
 
     public void editarTelefono( String nombre, String nuevoTelefono ) {
         //-> db .update( TABLE, ContentValues, Clausula WHERE,  Array ARGUMENTS Where );
-        db .update( TABLE_NAME, contenedor_valores( nombre, nuevoTelefono), CN_NAME + "=?", new String[] { nombre } );
+        db .update(TABLE_NAME, contenedor_valores(nombre, nuevoTelefono), CN_NAME + "=?", new String[]{nombre});
     }
 
     //-> Cargamos la lista de contactos en un cursor
@@ -95,4 +96,21 @@ public class DataBaseManager {
         //-> db. query( String table, String [] columns, String selection, String [] selectionArgs, String groupBy, String having, String orderBy );
         return db .query( TABLE_NAME, columnas, null, null, null, null, null );
     }
+
+    //-> Buscar contacto por nombre.
+    public Cursor buscarContacto( String nombre ) {
+
+        nombre = nombre .trim();                    //: Eliminamos los espacios al inicio y al final de la cadena.
+
+        String cadenaABuscar = "%",                 //: Inicializamos la cadena de busqueda con "%".
+               busqueda[] = nombre .split( " " );   //: Fragmentamos la busqueda por cada espacio en blanco.
+
+        //-> Itera cada campo del "Array" para ser concatenado en la cadena final de búsqueda.
+        for( String item : busqueda ) {
+            cadenaABuscar += item + "%";            //: Concatenamos cada item del "Array" agregandole un "%"
+        }
+
+        return db .query( TABLE_NAME, columnas, CN_NAME + " LIKE ?", new String[] { cadenaABuscar } , null, null, null );
+    }
+
 }

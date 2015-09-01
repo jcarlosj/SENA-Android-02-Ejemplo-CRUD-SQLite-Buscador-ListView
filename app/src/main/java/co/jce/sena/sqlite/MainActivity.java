@@ -5,17 +5,25 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     //-> Atributos (Componentes)
     private ListView lvContactos;
+    private EditText etBuscar;
+    private ImageButton ibBuscar;
 
     //-> Atributos (Especiales)
     private DataBaseManager manager;
-    private Cursor cContactos;
+    private Cursor cContactos,
+                   cBusqueda;
     private SimpleCursorAdapter adaptador;
 
     @Override
@@ -25,6 +33,11 @@ public class MainActivity extends AppCompatActivity {
 
         //-> Accedemos a los componentes del "Activity"
         lvContactos = ( ListView ) findViewById( R .id .lvContactos );
+        etBuscar = ( EditText ) findViewById( R .id .etBuscar );
+        ibBuscar = ( ImageButton ) findViewById( R .id .ibBuscar );
+
+        //-> Creamos el escuchador para el botón "Buscar"
+        ibBuscar .setOnClickListener( this );
 
         //-> Accedemos a la clase que construye la BD.
         //   (Instanciamos)
@@ -37,7 +50,13 @@ public class MainActivity extends AppCompatActivity {
         manager .insertar_Android( "Laura Zapata A", "2795411" );
         manager .insertar_Tradicional("Juliana Muñoz Betancour", "2698541");
         manager .insertar_Android("Lina Ossa", "3569521");
-        manager .insertar_Android( "Lina Marcela García Gomez", "7982014" );
+        manager .insertar_Android("Lina Marcela García Gomez", "7982014");
+        manager .insertar_Android("Juliana Puerta Villada", "5369211");
+        manager .insertar_Android("Shirley Patiño", "5996410");
+        manager .insertar_Android("Ana María Fernández", "6332598");
+        manager .insertar_Android( "Veronica Puerta Puerta", "5689531" );
+        manager .insertar_Android( "Laura Cuatin", "25698410" );
+        manager .insertar_Android( "Valentina Hoyos Farfan", "7592610" );
 
         //-> Creamos un "Array" con los valores de los campos traidos de la BD
         String from[] = new String[] {
@@ -82,5 +101,17 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick( View v ) {
+
+        if( v .getId() == R .id .ibBuscar ) {
+            //-> Colocamos la busqueda en un cursor nuevo.
+            cBusqueda = manager .buscarContacto( etBuscar .getText() .toString() );
+            adaptador .changeCursor( cBusqueda );       //: Cambiamos el cursor que desplegará el "ListView"
+
+        }
+
     }
 }
