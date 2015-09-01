@@ -1,6 +1,7 @@
 package co.jce.sena.sqlite;
 
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -107,11 +108,55 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick( View v ) {
 
         if( v .getId() == R .id .ibBuscar ) {
-            //-> Colocamos la busqueda en un cursor nuevo.
-            cBusqueda = manager .buscarContacto( etBuscar .getText() .toString() );
-            adaptador .changeCursor( cBusqueda );       //: Cambiamos el cursor que desplegará el "ListView"
+
+            //-> Hacemos un llamado a la clase privada y ella se encargará de ejecutar.
+            //   cada tarea en primer o segundo plano seǵún lo requiera.
+            new Tareas() .execute();
 
         }
 
     }
+
+    //-> Creamos una clase privada de la clase principal con el objetivo de trabajar algunas tareas en segundo plano.
+    //   esto nos permite evitar la relentización de algunas tareas (por ejemplo la carga de datos de una BD muy grande),
+    //   que se ejecutan en primer plano.
+    private class Tareas extends AsyncTask<Void, Void, Void> {
+
+        private String buscar;
+
+        //-> Segundo se ejecuta este método.
+        //   Aquí se ejecutan tareas en segundo plano, que requieren estarlo por que pueden afectar
+        //   el rendimiendo de la misma si se ejecutaran en primer plano.
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            //-> Colocamos la busqueda en un cursor nuevo.
+            cBusqueda = manager .buscarContacto( buscar );     //: Una búsqueda puede relentizar la aplicación por lo cual la ejecutamos en segundo plano
+
+            return null;
+        }
+
+        //-> Primero se ejecuta este método.
+        //   Aquí se ejecuta dentro del hilo principal (o Activity principal) de la aplicación.
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            buscar = etBuscar .getText() .toString();           //: Se captura el valor del campo "EditText"
+            Toast .makeText( getApplicationContext(), "Buscando...", Toast .LENGTH_SHORT ) .show();
+        }
+
+        //-> Tercero se ejecuta este método
+        //   Una ves se termina la ejecución de las tareas en segundo plano este método se ejecuta
+        //   y todas las tareas aqui contenidas lo harán en primer plano.
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            adaptador .changeCursor(cBusqueda);       //: Una vez finalizadas las tareas en segundo plano. Cambiamos el cursor que desplegará el "ListView"
+            Toast .makeText( getApplicationContext(), "Finalizada.", Toast .LENGTH_SHORT ) .show();
+
+        }
+    }
+
+
 }
