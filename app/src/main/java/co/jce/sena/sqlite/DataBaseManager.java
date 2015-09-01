@@ -93,12 +93,20 @@ public class DataBaseManager {
 
     //-> Cargamos la lista de contactos en un cursor
     public Cursor listaContactos() {
+
         //-> db. query( String table, String [] columns, String selection, String [] selectionArgs, String groupBy, String having, String orderBy );
         return db .query( TABLE_NAME, columnas, null, null, null, null, null );
     }
 
     //-> Buscar contacto por nombre.
     public Cursor buscarContacto( String nombre ) {
+
+        //-> Simulamos relentización de la BD.
+        try {
+            Thread .sleep( 7000 );      //: Detenemos (o dormimos) la ejecución de la aplicación por 7 segundos.
+        } catch ( InterruptedException e ) {
+            e.printStackTrace();
+        }
 
         nombre = nombre .trim();                    //: Eliminamos los espacios al inicio y al final de la cadena.
 
